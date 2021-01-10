@@ -16,7 +16,7 @@ html {
     border: solid var(--fg-color) 2px;
     position: fixed;
     text-align: center;
-    font-size: 6vmin;
+    font-size: 9vmin;
 }
 
 .main_line {
