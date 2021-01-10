@@ -1,5 +1,4 @@
 const UPDATE = 100
-HEIGHT = null
 
 function gettime() {
     return {
@@ -19,7 +18,6 @@ function getpart() {
         time: document.querySelector("#main_box .time"),
         date: document.querySelector("#main_box .date"),
         season: document.querySelector("#main_box .season"),
-
     }
 }
 
@@ -33,11 +31,10 @@ function setContent(part) {
 }
 
 function getdims(part) {
-    console.log(HEIGHT)
     let body_width = window.innerWidth
     let body_height = window.innerHeight
     let main_width = part.main.offsetWidth / body_width * 100
-    let main_height = HEIGHT / body_height * 100
+    let main_height = part.main.offsetHeight / body_height * 100
     return {
         // for logging
         body_width: body_width,
@@ -53,25 +50,15 @@ function getdims(part) {
 function moveit() {
     let part = getpart()
     let dim = getdims(part)
-    console.log(dim)
-    part.main.style.position = "fixed"
     part.main.style.left = `${dim.main_left}vw`
     part.main.style.top = `${dim.main_top}vh`
     setContent(part)
-
-}
-
-function startup() {
-    HEIGHT = document.querySelector("body").offsetHeight
-    setInterval(moveit, UPDATE)
 }
 
 // set content so width is right for moveit()
-let part = getpart()
-console.log(part)
-setContent(part)
+setContent(getpart())
 
-setTimeout(startup, 1000)  // allow time for positioning / sizing
+// allow time for positioning / sizing
+setTimeout(() => setInterval(moveit, UPDATE), 1000)
 
 // vim:sw=4
-
