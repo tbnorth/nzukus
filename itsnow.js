@@ -1,7 +1,8 @@
 // update every 61 seconds to guarantee minute change
 const UPDATE = 61000
 
-const HEMISPHERE = "N"
+// set to "N" or "S", default (null) attempts to calc. based on daylight savings
+HEMISPHERE  = null
 
 const HOUR = new Array(
     "middle of night",  // 0
@@ -42,6 +43,7 @@ const SEASON = {
 // time run started
 const START_TIME = new Date()
 // time (seconds) to advance per update, 0 => use real time
+// you probably want to set UPDATE to a low (300) value too
 const TIME_INCREMENT = 0
 // the timestep we're on now, in TIME_INCREMENT != 0
 TIME_STEP = 0
@@ -54,12 +56,18 @@ function gettime() {
     }
     let now = new Intl.DateTimeFormat('en', {dateStyle: 'full', timeStyle: 'long'})
     now = now.formatToParts(date).reduce((o, i) => ({...o, [i.type]: i.value}), {})
+    let hemisphere = whatHemisphere()
+    let season = ""
+    if (hemisphere) {
+        season = SEASON[hemisphere][date.getMonth()]
+    }
+
     return {
         day_name: `${now.weekday}`,
         time_name: HOUR[date.getHours()],
         time: `${now.hour}:${now.minute} ${now.dayPeriod}`,
         date: `${now.month} ${now.day} ${now.year}`,
-        season: SEASON[HEMISPHERE][date.getMonth()]
+        season: season,
     }
 }
 
@@ -116,12 +124,29 @@ function moveit() {
     setContent(part)
 }
 
+// https://stackoverflow.com/a/7832023/1072212, but fixed
+function whatHemisphere() {
+    if (HEMISPHERE) return HEMISPHERE
+    let y = new Date()
+    if (y.getTimezoneOffset==undefined) return null
+    y = y.getFullYear()
+    let jan = -(new Date(y, 0, 1, 0, 0, 0, 0).getTimezoneOffset())
+    let jul = -(new Date(y, 6, 1, 0, 0, 0, 0).getTimezoneOffset())
+    let diff = jan - jul
+    if (diff <  0) return 'N'
+    if (diff >  0) return 'S'
+    return null
+}
+
 // set content so width is right for moveit()
 setContent(getpart())
 
 // allow time for positioning / sizing
 // also adjust to put updates close to actual minute changes
 let delay = Math.max(0.5, 60 - new Date().getSeconds() % 60)
+if (TIME_INCREMENT != 0) {
+    delay = 0.5  // don't wait when testing
+}
 setTimeout(() => {moveit(); setInterval(moveit, UPDATE)}, delay * 1000)
 
 // vim:sw=4
