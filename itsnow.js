@@ -4,6 +4,12 @@ const UPDATE = 61000
 // set to "N" or "S", default (null) attempts to calc. based on daylight savings
 HEMISPHERE  = null
 
+ZONES = new Array(
+    {name: "Christchurch", zone: "Pacific/Auckland"},
+    {name: "Duluth", zone: "America/Chicago"},
+    {name: "London", zone: "Europe/London"},
+)
+
 const HOUR = new Array(
     "middle of night",  // 0
     "nighttime (before dawn)",  // 1
@@ -137,6 +143,18 @@ function whatHemisphere() {
     if (diff >  0) return 'S'
     return null
 }
+
+function getZones() {
+    let zones = new Array()
+    let now = new Date()
+    ZONES.forEach((z) => {
+
+        zones.push({name: z.name})
+    })
+    return zones
+}
+
+console.log(getZones())
 
 // set content so width is right for moveit()
 setContent(getpart())
