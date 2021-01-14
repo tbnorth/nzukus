@@ -12,10 +12,10 @@ ZONES = new Array(
 
 const HOUR = new Array(
     "middle of night",  // 0
-    "nighttime (before dawn)",  // 1
-    "nighttime (before dawn)",  // 2
-    "nighttime (before dawn)",  // 3
-    "nighttime (before dawn)",  // 4
+    "night time (before dawn)",  // 1
+    "night time (before dawn)",  // 2
+    "night time (before dawn)",  // 3
+    "night time (before dawn)",  // 4
     "very early morning",  // 5
     "very early morning",  // 6
     "early morning",  // 7
@@ -32,8 +32,8 @@ const HOUR = new Array(
     "evening",  // 18
     "late evening",  // 19
     "late evening",  // 20
-    "nightime",  // 21
-    "nightime",  // 22
+    "night time",  // 21
+    "night time",  // 22
     "middle of night",  // 23
 )
 
@@ -147,9 +147,13 @@ function whatHemisphere() {
 function getZones() {
     let zones = new Array()
     let now = new Date()
+    let nowText = now.toLocaleTimeString("en-US")
     ZONES.forEach((z) => {
-
-        zones.push({name: z.name})
+        let thenText = 
+        zones.push({
+            name: z.name, 
+            current: nowText == 
+            date: new Date(now.toLocaleTimeString("en-US", {timeZone:z.zone})}),
     })
     return zones
 }
