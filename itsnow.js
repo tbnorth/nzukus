@@ -107,7 +107,7 @@ function setContent(part) {
                 "en-US", {timeZone:zone.zone, hourCycle: "h23", hour: "2-digit"}
             ).replace(/ [AP]M/, ''))
         // description of hour without "(before dawn)" clarification
-        hour = HOUR[hour].replace(/ (.*)/, '')
+        hour = HOUR[hour].replace(/ \(.*\)/, '')
         div.appendChild(document.createTextNode(`${zone.name}: ${hour}`))
         zones.appendChild(div)
     })
