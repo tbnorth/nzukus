@@ -23,4 +23,13 @@ html {
     margin: 1vw 3vw
 }
 
+#zones {
+    font-size: 5vmin;
+    text-align: left;
+}
+
+#zones div {
+    margin: 0.5vmin;
+}
+
 /* vim:sw=4 */

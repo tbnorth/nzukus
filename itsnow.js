@@ -1,5 +1,5 @@
-// update every 61 seconds to guarantee minute change
-const UPDATE = 61000
+// update every UPDATE milliseconds
+const UPDATE = 60000
 
 // set to "N" or "S", default (null) attempts to calc. based on daylight savings
 HEMISPHERE  = null
@@ -74,6 +74,7 @@ function gettime() {
         time: `${now.hour}:${now.minute} ${now.dayPeriod}`,
         date: `${now.month} ${now.day} ${now.year}`,
         season: season,
+        now: date,
     }
 }
 
@@ -95,6 +96,20 @@ function setContent(part) {
     part.time.innerHTML= time.time
     part.date.innerHTML= time.date
     part.season.innerHTML= time.season
+    let zones = document.getElementById("zones")
+    while (zones.firstChild) {
+        zones.removeChild(zones.firstChild)
+    }
+    getZones().forEach((zone) => {
+        let div = document.createElement('DIV')
+        let hour = parseInt(
+            time.now.toLocaleTimeString(
+                "en-US", {timeZone:zone.zone, hourCycle: "h23", hour: "2-digit"}
+            ).replace(/ [AP]M/, ''))
+        div.appendChild(document.createTextNode(`${zone.name}: ${HOUR[hour]}`))
+        zones.appendChild(div)
+    })
+
 }
 
 function getdims(part) {
@@ -124,10 +139,10 @@ function getdims(part) {
 
 function moveit() {
     let part = getpart()
+    setContent(part)
     let dim = getdims(part)
     part.main.style.left = `${dim.main_left}vw`
     part.main.style.top = `${dim.main_top}vh`
-    setContent(part)
 }
 
 // https://stackoverflow.com/a/7832023/1072212, but fixed
@@ -147,18 +162,21 @@ function whatHemisphere() {
 function getZones() {
     let zones = new Array()
     let now = new Date()
-    let nowText = now.toLocaleTimeString("en-US")
+    let nowText = now.toLocaleString("en-US", {timeZoneName: 'short'})
     ZONES.forEach((z) => {
-        let thenText = 
-        zones.push({
-            name: z.name, 
-            current: nowText == 
-            date: new Date(now.toLocaleTimeString("en-US", {timeZone:z.zone})}),
+        let thenText = now.toLocaleString("en-US", {timeZone:z.zone, timeZoneName: 'short'})
+        if (nowText != thenText) {
+            zones.push({
+                name: z.name,
+                current: (nowText == thenText),
+                date: new Date(thenText),
+                zone: z.zone,
+            })
+        }
     })
     return zones
 }
 
-console.log(getZones())
 
 // set content so width is right for moveit()
 setContent(getpart())
