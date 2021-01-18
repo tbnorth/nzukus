@@ -10,3 +10,5 @@ Fork and customize to make one that suits your situation.
 
 Attempts to calculate hemisphere to describe season, but that only works for
 locations that observe daylight saving time.  You an set it explicitly if needed.
+
+![Screen shot](screenshot.png)
