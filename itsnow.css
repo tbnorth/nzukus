@@ -23,13 +23,16 @@ html {
     margin: 1vw 3vw
 }
 
-#zones {
+#zones, #events {
     font-size: 5vmin;
     text-align: left;
 }
 
-#zones div {
+#zones div, #events div {
     margin: 0.5vmin;
 }
 
+#events {
+    color: yellow;
+}
 /* vim:sw=4 */

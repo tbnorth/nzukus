@@ -4,6 +4,13 @@ const UPDATE = 60000
 // set to "N" or "S", default (null) attempts to calc. based on daylight savings
 HEMISPHERE  = null
 
+EVENTS = [
+    {day_name: "Monday", text: "11:30 - visitor"},
+    {day_name: "Wednesday", text: "11:30 - visitor"},
+    {day_name: "Friday", text: "11:30 - visitor"},
+    {date: "January 21 2021", text: "Groceries"},
+]
+
 ZONES = new Array(
     {name: "Christchurch", zone: "Pacific/Auckland"},
     {name: "Duluth", zone: "America/Chicago"},
@@ -54,12 +61,13 @@ const TIME_INCREMENT = 0
 // the timestep we're on now, in TIME_INCREMENT != 0
 TIME_STEP = 0
 
-function gettime() {
+function getTime(offset=0) {
     let date = new Date()
     if (TIME_INCREMENT != 0) {
         date.setSeconds(START_TIME.getSeconds() + TIME_INCREMENT * TIME_STEP)
         TIME_STEP += 1
     }
+    date.setSeconds(date.getSeconds()+offset)
     let now = new Intl.DateTimeFormat('en', {dateStyle: 'full', timeStyle: 'long'})
     now = now.formatToParts(date).reduce((o, i) => ({...o, [i.type]: i.value}), {})
     let hemisphere = whatHemisphere()
@@ -86,19 +94,47 @@ function getpart() {
         time: document.querySelector("#main_box .time"),
         date: document.querySelector("#main_box .date"),
         season: document.querySelector("#main_box .season"),
+        zones: document.getElementById("zones"),
+        events: document.getElementById("events"),
     }
 }
 
+function getEvents() {
+    let events = []
+    for (let offset=0; offset < 2; offset++) {
+        let day = offset == 0 ? "Today" : "Tomorrow"
+        let time = getTime(offset*24*60*60)
+        EVENTS.forEach((event_) => {
+            if (event_.day_name == time.day_name) {
+                events.push(`${day}: ${event_.text}`)
+            }
+            if (event_.date == time.date) {
+                events.push(`${day}: ${event_.text}`)
+            }
+        })
+    }
+    return(events)
+}
+
 function setContent(part) {     
-    let time = gettime()
+    let time = getTime()
     part.day_name.innerHTML= time.day_name
     part.time_name.innerHTML= time.time_name
     part.time.innerHTML= time.time
     part.date.innerHTML= time.date
     part.season.innerHTML= time.season
-    let zones = document.getElementById("zones")
-    while (zones.firstChild) {
-        zones.removeChild(zones.firstChild)
+    // events listing
+    while (part.events.firstChild) {
+        part.events.removeChild(part.events.firstChild)
+    }
+    getEvents().forEach((event_) => {
+        let div = document.createElement('DIV')
+        div.appendChild(document.createTextNode(event_))
+        part.events.appendChild(div)
+    })
+    // zones listing
+    while (part.zones.firstChild) {
+        part.zones.removeChild(part.zones.firstChild)
     }
     getZones().forEach((zone) => {
         let div = document.createElement('DIV')
@@ -109,7 +145,7 @@ function setContent(part) {
         // description of hour without "(before dawn)" clarification
         hour = HOUR[hour].replace(/ \(.*\)/, '')
         div.appendChild(document.createTextNode(`${zone.name}: ${hour}`))
-        zones.appendChild(div)
+        part.zones.appendChild(div)
     })
 
 }
