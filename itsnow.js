@@ -138,13 +138,14 @@ function setContent(part) {
     }
     getZones().forEach((zone) => {
         let div = document.createElement('DIV')
-        let hour = parseInt(
-            time.now.toLocaleTimeString(
-                "en-US", {timeZone:zone.zone, hourCycle: "h23", hour: "2-digit"}
-            ).replace(/ [AP]M/, ''))
+        let hour = time.now.toLocaleTimeString(
+                "en-US", {timeZone:zone.zone, hourCycle: "h23", hour: "2-digit"})
+        hour = parseInt(hour.replace(/ [AP]M/, ''))
         // description of hour without "(before dawn)" clarification
         hour = HOUR[hour].replace(/ \(.*\)/, '')
-        div.appendChild(document.createTextNode(`${zone.name}: ${hour}`))
+        let timestr = time.now.toLocaleTimeString(
+                "en-US", {timeZone:zone.zone, hour: "numeric", minute: "numeric"})
+        div.appendChild(document.createTextNode(`${zone.name}: ${hour} ${timestr}`))
         part.zones.appendChild(div)
     })
 
