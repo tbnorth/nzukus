@@ -5,10 +5,12 @@ const UPDATE = 60000
 HEMISPHERE  = null
 
 EVENTS = [
-    {date: "January 19 2021", text: "Groceries"},
-    {date: "January 21 2021", text: "4:00 Clinic"},
+    {day_name: "Saturday", text: "12:00 - visitor"},
+    {day_name: "Sunday", text: "12:00 - visitor"},
     {day_name: "Monday", text: "12:00 - visitor"},
+    {day_name: "Tuesday", text: "12:00 - visitor"},
     {day_name: "Wednesday", text: "12:00 - visitor"},
+    {day_name: "Thursday", text: "12:00 - visitor"},
     {day_name: "Friday", text: "12:00 - visitor"},
 ]
 
