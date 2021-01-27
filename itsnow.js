@@ -5,13 +5,14 @@ const UPDATE = 60000
 HEMISPHERE  = null
 
 EVENTS = [
-    {day_name: "Saturday", text: "12:00 - visitor"},
-    {day_name: "Sunday", text: "12:00 - visitor"},
+    {day_name: "Saturday", text: "12:00 - visitor?"},
+    {day_name: "Sunday", text: "12:00 - visitor?"},
     {day_name: "Monday", text: "12:00 - visitor"},
-    {day_name: "Tuesday", text: "12:00 - visitor"},
+    {day_name: "Tuesday", text: "12:00 - visitor?"},
     {day_name: "Wednesday", text: "12:00 - visitor"},
-    {day_name: "Thursday", text: "12:00 - visitor"},
+    {day_name: "Thursday", text: "12:00 - visitor?"},
     {day_name: "Friday", text: "12:00 - visitor"},
+    {date: "January 28 2021", text: "Groceries"},
 ]
 
 ZONES = new Array(
