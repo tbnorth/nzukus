@@ -12,7 +12,7 @@ EVENTS = [
     {day_name: "Wednesday", text: "12:00 - visitor"},
     {day_name: "Thursday", text: "12:00 - visitor"},
     {day_name: "Friday", text: "12:00 - visitor"},
-    {date: "February 2 2021", text: "Groceries"},
+    {date: "February 4 2021", text: "9:45 Optometrist"},
 ]
 
 ZONES = new Array(
