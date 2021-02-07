@@ -1,9 +1,6 @@
 // update every UPDATE milliseconds
 const UPDATE = 60000
 
-// set to "N" or "S", default (null) attempts to calc. based on daylight savings
-HEMISPHERE  = null
-
 EVENTS = [
     {day_name: "Saturday", text: "12:00 - visitor"},
     {day_name: "Sunday", text: "12:00 - visitor"},
@@ -12,13 +9,13 @@ EVENTS = [
     {day_name: "Wednesday", text: "12:00 - visitor"},
     {day_name: "Thursday", text: "12:00 - visitor"},
     {day_name: "Friday", text: "12:00 - visitor"},
-    {date: "February 4 2021", text: "9:45 Optometrist"},
+    {date: "February 11, 2021", text: "10:00 Jamie visit/call"},
 ]
 
-ZONES = new Array(
-    {name: "Christchurch", zone: "Pacific/Auckland"},
-    {name: "Duluth", zone: "America/Chicago"},
-    {name: "London", zone: "Europe/London"},
+ZONES = new Array(  // first is primary, others are for reference
+    {name: "Christchurch", zone: "Pacific/Auckland", hemisphere: 'S'},
+    {name: "Duluth", zone: "America/Chicago", hemisphere: 'N'},
+    {name: "London", zone: "Europe/London", hemisphere: 'N'},
 )
 
 const HOUR = new Array(
@@ -66,31 +63,19 @@ const TIME_INCREMENT = 0
 TIME_STEP = 0
 
 function getTime(offset=0) {
+    // get time with offset (for tomorrow's events) and acceleration for
+    // debugging
     let date = new Date()
-    if (TIME_INCREMENT != 0) {
+    if (TIME_INCREMENT != 0) {  //debugging acceleration
         date.setSeconds(START_TIME.getSeconds() + TIME_INCREMENT * TIME_STEP)
         TIME_STEP += 1
     }
     date.setSeconds(date.getSeconds()+offset)
-    let now = new Intl.DateTimeFormat('en', {dateStyle: 'full', timeStyle: 'long'})
-    now = now.formatToParts(date).reduce((o, i) => ({...o, [i.type]: i.value}), {})
-    let hemisphere = whatHemisphere()
-    let season = ""
-    if (hemisphere) {
-        season = SEASON[hemisphere][date.getMonth()]
-    }
-
-    return {
-        day_name: `${now.weekday}`,
-        time_name: HOUR[date.getHours()],
-        time: `${now.hour}:${now.minute} ${now.dayPeriod}`,
-        date: `${now.month} ${now.day} ${now.year}`,
-        season: season,
-        now: date,
-    }
+    return date
 }
 
 function getpart() {
+    // get DOM elements that receive changing values
     return {
         main: document.getElementById("main_box"),
         day_name: document.querySelector("#main_box .day_name"),
@@ -104,15 +89,16 @@ function getpart() {
 }
 
 function getEvents() {
+    // get events for today / tomorrow
     let events = []
-    for (let offset=0; offset < 2; offset++) {
-        let day = offset == 0 ? "Today" : "Tomorrow"
-        let time = getTime(offset*24*60*60)
+    for (let day_offset=0; day_offset < 2; day_offset++) {
+        let day = day_offset == 0 ? "Today" : "Tomorrow"
+        let time = getZones(offset=24*60*60*day_offset).shift()
         EVENTS.forEach((event_) => {
             if (event_.day_name == time.day_name) {
                 events.push(`${day}: ${event_.text}`)
             }
-            if (event_.date == time.date) {
+            else if (event_.date == time.date) {
                 events.push(`${day}: ${event_.text}`)
             }
         })
@@ -121,7 +107,9 @@ function getEvents() {
 }
 
 function setContent(part) {     
-    let time = getTime()
+    // put changing values into DOM
+    let zones = getZones()
+    let time = zones.shift()
     part.day_name.innerHTML= time.day_name
     part.time_name.innerHTML= time.time_name
     part.time.innerHTML= time.time
@@ -140,22 +128,17 @@ function setContent(part) {
     while (part.zones.firstChild) {
         part.zones.removeChild(part.zones.firstChild)
     }
-    getZones().forEach((zone) => {
+    zones.forEach((zone) => {
         let div = document.createElement('DIV')
-        let hour = time.now.toLocaleTimeString(
-                "en-US", {timeZone:zone.zone, hourCycle: "h23", hour: "2-digit"})
-        hour = parseInt(hour.replace(/ [AP]M/, ''))
-        // description of hour without "(before dawn)" clarification
-        hour = HOUR[hour].replace(/ \(.*\)/, '')
-        let timestr = time.now.toLocaleTimeString(
-                "en-US", {timeZone:zone.zone, hour: "numeric", minute: "numeric"})
-        div.appendChild(document.createTextNode(`${zone.name}: ${hour} ${timestr}`))
+        let time_name = zone.time_name.replace(/ \(.*\)/, '')
+        div.appendChild(document.createTextNode(`${zone.name}: ${time_name} ${zone.time}`))
         part.zones.appendChild(div)
     })
 
 }
 
 function getdims(part) {
+    // calculate sizes
     let body_width = window.innerWidth
     let body_height = window.innerHeight
     let main_width = part.main.offsetWidth / body_width * 100
@@ -181,6 +164,7 @@ function getdims(part) {
 }
 
 function moveit() {
+    // move to new part of screen every minute
     let part = getpart()
     setContent(part)
     let dim = getdims(part)
@@ -188,34 +172,20 @@ function moveit() {
     part.main.style.top = `${dim.main_top}vh`
 }
 
-// https://stackoverflow.com/a/7832023/1072212, but fixed
-function whatHemisphere() {
-    if (HEMISPHERE) return HEMISPHERE
-    let y = new Date()
-    if (y.getTimezoneOffset==undefined) return null
-    y = y.getFullYear()
-    let jan = -(new Date(y, 0, 1, 0, 0, 0, 0).getTimezoneOffset())
-    let jul = -(new Date(y, 6, 1, 0, 0, 0, 0).getTimezoneOffset())
-    let diff = jan - jul
-    if (diff <  0) return 'N'
-    if (diff >  0) return 'S'
-    return null
-}
-
-function getZones() {
+function getZones(offset=0) {
+    // get descriptive text for each zone
     let zones = new Array()
-    let now = new Date()
-    let nowText = now.toLocaleString("en-US", {timeZoneName: 'short'})
+    let now = getTime(offset=offset)
     ZONES.forEach((z) => {
-        let thenText = now.toLocaleString("en-US", {timeZone:z.zone, timeZoneName: 'short'})
-        if (nowText != thenText) {
-            zones.push({
-                name: z.name,
-                current: (nowText == thenText),
-                date: new Date(thenText),
-                zone: z.zone,
-            })
-        }
+        zones.push({
+            name: z.name,
+            zone: z.zone,
+            day_name: now.toLocaleString("en-US", {timeZone:z.zone, weekday: 'long'}),
+            time_name: HOUR[parseInt(now.toLocaleString("en-US", {timeZone:z.zone, hourCycle: 'h23', hour: 'numeric'}).replace(/ [AP]M/, ''))],
+            time: now.toLocaleString("en-US", {timeZone:z.zone, hour: 'numeric', minute: 'numeric'}),
+            date: now.toLocaleString("en-US", {timeZone:z.zone, month: 'long', day: 'numeric', year: 'numeric'}),
+            season: SEASON[z.hemisphere][now.getMonth()],
+        })
     })
     return zones
 }
