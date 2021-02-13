@@ -1,5 +1,6 @@
 // update every UPDATE milliseconds
 const UPDATE = 60000
+const WEATHER_MINUTES = 15
 
 EVENTS = [  // time relative to first zone
     {day_name: "Monday", text: "11:30 - visitor"},
@@ -42,10 +43,10 @@ const HOUR = new Array(
 )
 
 const SEASON = {
-    N: ["winter","winter","spring","spring","spring","summer",
-        "summer","summer","autumn","autumn","autumn", "winter"],
-    S: ["summer","summer","autumn","autumn","autumn","winter",
-        "winter","winter","spring","spring","spring", "summer"],
+    N: ["Winter","Winter","Spring","Spring","Spring","Summer",
+        "Summer","Summer","Autumn","Autumn","Autumn", "Winter"],
+    S: ["Summer","Summer","Autumn","Autumn","Autumn","Winter",
+        "Winter","Winter","Spring","Spring","Spring", "Summer"],
 }
 
 
@@ -78,7 +79,8 @@ function getpart() {
         time_name: document.querySelector("#main_box .time_name"),
         time: document.querySelector("#main_box .time"),
         date: document.querySelector("#main_box .date"),
-        season: document.querySelector("#main_box .season"),
+        season: document.querySelector(".season"),
+        weather: document.querySelector(".weather"),
         zones: document.getElementById("zones"),
         events: document.getElementById("events"),
     }
@@ -106,11 +108,11 @@ function setContent(part) {
     // put changing values into DOM
     let zones = getZones()
     let time = zones.shift()
-    part.day_name.innerHTML= time.day_name
-    part.time_name.innerHTML= time.time_name
-    part.time.innerHTML= time.time
-    part.date.innerHTML= time.date
-    part.season.innerHTML= time.season
+    part.day_name.innerHTML = time.day_name
+    part.time_name.innerHTML = time.time_name
+    part.time.innerHTML = time.time
+    part.date.innerHTML = time.date
+    part.season.innerHTML = time.season
     // events listing
     while (part.events.firstChild) {
         part.events.removeChild(part.events.firstChild)
@@ -186,6 +188,12 @@ function getZones(offset=0) {
     return zones
 }
 
+function set_weather(response) {
+    if (response === null) {
+        return
+    }
+    getpart().weather.innerHTML = `, ${response}`
+}
 
 // set content so width is right for moveit()
 setContent(getpart())
@@ -197,5 +205,6 @@ if (TIME_INCREMENT != 0) {
     delay = 0.5  // don't wait when testing
 }
 setTimeout(() => {moveit(); setInterval(moveit, UPDATE)}, delay * 1000)
-
+itisnow_weather().then(set_weather)
+setInterval(() => {itisnow_weather().then(set_weather)}, WEATHER_MINUTES*60*1000)
 // vim:sw=4
