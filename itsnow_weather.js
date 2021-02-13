@@ -17,7 +17,7 @@ const APIKEY = "YOUR_KEY_HERE"
 async function OWM_itisnow_weather() {
     // console.log("Fetching weather", new Date())
     return fetch(
-        `http://api.openweathermap.org/data/2.5/weather?id=${CITY}&appid=${APIKEY}`
+        `//api.openweathermap.org/data/2.5/weather?id=${CITY}&appid=${APIKEY}`
     ).then(response => response.json().then(format_weather))
 }
 
