@@ -2,6 +2,7 @@
 // it should return a Promise that resolves to a string describing
 // the weather at the target location.
 
+// default - no weather information
 function itisnow_weather() {
     return new Promise( resolve => {
         resolve(null)

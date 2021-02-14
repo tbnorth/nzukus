@@ -1,11 +1,12 @@
 // update every UPDATE milliseconds
 const UPDATE = 60000
-const WEATHER_MINUTES = 15
+const WEATHER_MINUTES = 15  // see ./itsnow_weather.js
 
 EVENTS = [  // time relative to first zone
     {day_name: "Monday", text: "11:30 - visitor"},
     {day_name: "Wednesday", text: "11:30 - visitor"},
     {day_name: "Friday", text: "11:30 - visitor"},
+    {day_name: "Saturday", text: "11:30 - visitor"},
     {date: "February 9, 2021", text: "Groceries"},
 ]
 
