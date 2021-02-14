@@ -1,6 +1,6 @@
 // update every UPDATE milliseconds
 const UPDATE = 60000
-const WEATHER_MINUTES = 15
+const WEATHER_MINUTES = 15  // see ./itsnow_weather.js
 
 EVENTS = [
     {day_name: "Saturday", text: "12:00 - visitor"},
