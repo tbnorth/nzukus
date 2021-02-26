@@ -3,8 +3,8 @@ const UPDATE = 60000
 const WEATHER_MINUTES = 15  // see ./itsnow_weather.js
 
 EVENTS = [
-    {day_name: "Saturday", text: "12 midday visitor/meal"},
-    {day_name: "Sunday", text: "12 midday visitor/meal"},
+    {day_name: "Saturday", text: "12 midday visitor (no meal)"},
+    {day_name: "Sunday", text: "12 midday visitor (no meal)"},
     {day_name: "Monday", text: "12 midday visitor/meal"},
     {day_name: "Tuesday", text: "12 midday visitor/meal"},
     {day_name: "Wednesday", text: "12 midday visitor/meal"},
