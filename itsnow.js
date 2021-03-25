@@ -11,6 +11,7 @@ EVENTS = [
     {day_name: "Thursday", text: "14 midday visitor / meal"},
     {day_name: "Friday", text: "12 midday visitor / meal"},
     {date: "March 27, 2021", text: "Groceries"},
+    {date: "April 1, 2021", text: "11 AM carpet cleaner"},
 ]
 
 ZONES = new Array(  // first is primary, others are for reference
