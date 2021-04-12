@@ -3,13 +3,13 @@ const UPDATE = 60000
 const WEATHER_MINUTES = 15  // see ./itsnow_weather.js
 
 EVENTS = [
-    {day_name: "Saturday", text: "12 midday visitor (no meal)"},
-    {day_name: "Sunday", text: "12 midday visitor (no meal)"},
-    {day_name: "Monday", text: "12 midday visitor / meal"},
-    {day_name: "Tuesday", text: "12 midday visitor / meal"},
-    {day_name: "Wednesday", text: "12 midday visitor / meal"},
-    {day_name: "Thursday", text: "14 midday visitor / meal"},
-    {day_name: "Friday", text: "12 midday visitor / meal"},
+    // {day_name: "Saturday", text: "12 midday visitor (no meal)"},
+    // {day_name: "Sunday", text: "12 midday visitor (no meal)"},
+    // {day_name: "Monday", text: "12 midday visitor / meal"},
+    // {day_name: "Tuesday", text: "12 midday visitor / meal"},
+    // {day_name: "Wednesday", text: "12 midday visitor / meal"},
+    // {day_name: "Thursday", text: "14 midday visitor / meal"},
+    // {day_name: "Friday", text: "12 midday visitor / meal"},
     {date: "March 27, 2021", text: "Groceries"},
     {date: "April 1, 2021", text: "11 AM carpet cleaner"},
 ]
