@@ -1,4 +1,4 @@
-const CITY = "2185148"
+const CITY = "6220587"  // "2185148"
 const APIKEY = "ddf9c6c8ad10362df958e1a938c1c4e1"
 
 async function itisnow_weather() {
